@@ -47,7 +47,7 @@ dependencies {
 /*    implementation(libs.retrofit.gson)
     implementation(libs.gson)*/
     implementation(libs.retrofit.serialization)
-   // implementation(libs.coil3)
+    implementation(libs.coil3)
     implementation(libs.coil3.compose)
     implementation(libs.coil3.network.okhttp) // 🔥 обязательно для загрузки по URL
     implementation(libs.glide)
