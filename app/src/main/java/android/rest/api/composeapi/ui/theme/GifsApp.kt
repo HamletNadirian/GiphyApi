@@ -35,7 +35,8 @@ fun GifsPhotosApp() {
               viewModel(factory = GifsViewModel.Factory)
             HomeScreen(
                 gifsUiState = gifsViewModel.gifsUiState,
-                contentPadding = it
+                contentPadding = it,
+                retryAction = gifsViewModel::getGifs
             )
         }
     }

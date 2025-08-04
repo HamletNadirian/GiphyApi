@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
@@ -44,18 +45,14 @@ import com.bumptech.glide.gifdecoder.GifDecoder
 @Composable
 fun HomeScreen(
     gifsUiState: GifsUiState,
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp))
 {
     when (gifsUiState) {
         is GifsUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
         is GifsUiState.Success -> GifsGridScreen(gifsUiState.gifs, modifier,contentPadding)
-
-        /*    is GifsUiState.Success -> GifsCard(
-             //gifsUiState.gifs,modifier = modifier.fillMaxSize())
-         //gifsUiState.gifs.images.original.url)
-         gifsUiState.gifs.images.original.url, modifier = modifier.fillMaxSize())*/
-        is GifsUiState.Error -> ErrorScreen(modifier = modifier.fillMaxSize())
+        is GifsUiState.Error -> ErrorScreen(retryAction, modifier = modifier.fillMaxSize())
     }
 }
 
@@ -120,10 +117,7 @@ fun GifsGridScreen(
                 .aspectRatio(1.5f)
             )
         }
-      /*  items(items = gifs, key = { gifs -> gifs.gifs[0].images.original.url }) {
-          // gif -> GifsCard(gifs[0].gifs[0].images.original.url)
-           gif -> GifsCard(gifs[0].gifs.first().images.original.url)
-        }*/
+
     }
 }
 /*@Composable
@@ -143,7 +137,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
     )
 }
 @Composable
-fun ErrorScreen(modifier: Modifier = Modifier) {
+fun ErrorScreen(retryAction:()-> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
@@ -153,6 +147,9 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
             painter = painterResource(id = R.drawable.ic_connection_error), contentDescription = ""
         )
         Text(text = stringResource(R.string.loading_failed), modifier = Modifier.padding(16.dp))
+        Button(onClick = retryAction) {
+            Text(stringResource(R.string.retry))
+        }
     }
 }
 

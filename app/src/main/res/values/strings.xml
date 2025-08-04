@@ -4,5 +4,6 @@
     <string name="loading">Loading</string>
     <string name="placeholder_success">Placeholder text</string>
     <string name="gifs_photo">Gifs photo</string>
+    <string name="retry">Retry</string>
 
 </resources>
