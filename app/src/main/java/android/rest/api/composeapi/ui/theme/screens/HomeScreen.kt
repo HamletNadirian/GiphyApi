@@ -1,4 +1,5 @@
 package android.rest.api.composeapi.ui.theme.screens
+import android.graphics.Color
 import android.rest.api.composeapi.R
 import android.rest.api.composeapi.model.GifItem
 import android.rest.api.composeapi.model.GifResponse
@@ -71,6 +72,9 @@ fun GifsCard(
     val context = LocalContext.current
     Card(
         modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = androidx.compose.ui.graphics.Color.Black
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Box(
@@ -84,7 +88,7 @@ fun GifsCard(
             AndroidView(
                 factory = {
                     ImageView(it).apply {
-                        scaleType = ImageView.ScaleType.FIT_CENTER
+                        scaleType = ImageView.ScaleType.CENTER_CROP
                         isClickable = false
                         isFocusable = false
                         Glide.with(context)
@@ -116,7 +120,7 @@ fun GifsGridScreen(
         items(items = gifs, key = { gif -> gif.images.original.url }) { gif ->
             GifsCard(
                 url = gif.images.original.url,
-                onGifClick = onGifClick, 
+                onGifClick = onGifClick,
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxSize()
