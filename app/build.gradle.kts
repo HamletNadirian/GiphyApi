@@ -42,6 +42,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.compose)
+
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.retrofit)
 /*    implementation(libs.retrofit.gson)
@@ -49,9 +51,9 @@ dependencies {
     implementation(libs.retrofit.serialization)
     implementation(libs.coil3)
     implementation(libs.coil3.compose)
-    implementation(libs.coil3.network.okhttp) // 🔥 обязательно для загрузки по URL
+    implementation(libs.coil3.network.okhttp)
     implementation(libs.glide)
-    kapt(libs.glide.compiler) // если используешь аннотации GlideModule
+    kapt(libs.glide.compiler)
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.core.ktx)

@@ -1,5 +1,4 @@
 package android.rest.api.composeapi.ui.theme.screens
-
 import android.rest.api.composeapi.R
 import android.rest.api.composeapi.model.GifItem
 import android.rest.api.composeapi.model.GifResponse
@@ -9,6 +8,7 @@ import android.rest.api.composeapi.ui.theme.ComposeApiTheme
 import android.util.Log
 import android.widget.ImageView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,33 +46,26 @@ import com.bumptech.glide.gifdecoder.GifDecoder
 fun HomeScreen(
     gifsUiState: GifsUiState,
     retryAction: () -> Unit,
+    onGifClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp))
-{
+    contentPadding: PaddingValues = PaddingValues(0.dp)
+) {
     when (gifsUiState) {
         is GifsUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
-        is GifsUiState.Success -> GifsGridScreen(gifsUiState.gifs, modifier,contentPadding)
+        is GifsUiState.Success -> GifsGridScreen(
+            gifs = gifsUiState.gifs,
+            onGifClick = onGifClick,
+            modifier = modifier,
+            contentPadding = contentPadding
+        )
         is GifsUiState.Error -> ErrorScreen(retryAction, modifier = modifier.fillMaxSize())
     }
 }
 
-
-/*@Composable
-fun GifsCard(gif: GifItem, modifier: Modifier = Modifier){
-    AsyncImage(
-        model = ImageRequest.Builder(context = LocalContext.current)
-            .data(gif.images.original.url)
-            .crossfade(true)
-            .build(),
-        contentDescription = stringResource(R.string.gifs_photo),
-        modifier = Modifier.fillMaxWidth()
-    )
-    Log.d("GifsCard", "GIF URL: ${gif.images.original.url}")
-
-}*/
 @Composable
 fun GifsCard(
-    url:String,
+    url: String,
+    onGifClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -80,27 +73,38 @@ fun GifsCard(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
-        AndroidView(
-            factory = {
-                ImageView(it).apply {
-                    scaleType = ImageView.ScaleType.FIT_CENTER
-                    Glide.with(context)
-                        .asGif()
-                        .load(url)
-                        .placeholder(R.drawable.loading_img)          // заглушка при загрузке
-                        .error(R.drawable.ic_broken_image)             // при ошибке
-                        .into(this)
-
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable {
+                    Log.d("GifsCard", "Clicked on GIF: $url")
+                    onGifClick(url)
                 }
-            },
-            modifier = modifier.fillMaxWidth()
-        )
+        ) {
+            AndroidView(
+                factory = {
+                    ImageView(it).apply {
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                        isClickable = false
+                        isFocusable = false
+                        Glide.with(context)
+                            .asGif()
+                            .load(url)
+                            .placeholder(R.drawable.loading_img)
+                            .error(R.drawable.ic_broken_image)
+                            .into(this)
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
 
 @Composable
 fun GifsGridScreen(
     gifs: List<GifItem>,
+    onGifClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -110,24 +114,18 @@ fun GifsGridScreen(
         contentPadding = contentPadding,
     ) {
         items(items = gifs, key = { gif -> gif.images.original.url }) { gif ->
-            GifsCard(url = gif.images.original.url,
+            GifsCard(
+                url = gif.images.original.url,
+                onGifClick = onGifClick, 
                 modifier = Modifier
                     .padding(4.dp)
-                .fillMaxWidth()
-                .aspectRatio(1.5f)
+                    .fillMaxSize()
+                    .aspectRatio(1.5f)
             )
         }
-
     }
 }
-/*@Composable
-fun GifsCard(gif: GifItem, modifier: Modifier = Modifier) {
-    AsyncImage(
-        model = gif.images.original.url,
-        contentDescription = stringResource(R.string.gifs_photo),
-        modifier = modifier.fillMaxWidth()
-    )
-}*/
+
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
     Image(
@@ -136,15 +134,17 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
         contentDescription = stringResource(R.string.loading)
     )
 }
+
 @Composable
-fun ErrorScreen(retryAction:()-> Unit, modifier: Modifier = Modifier) {
+fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_connection_error), contentDescription = ""
+            painter = painterResource(id = R.drawable.ic_connection_error),
+            contentDescription = ""
         )
         Text(text = stringResource(R.string.loading_failed), modifier = Modifier.padding(16.dp))
         Button(onClick = retryAction) {
@@ -171,12 +171,13 @@ fun LoadingScreenPreview() {
     }
 }
 
-
 @Preview
 @Composable
 fun GifsGridScreenPreview() {
     ComposeApiTheme {
-        var mockData = List(10){ GifItem(images = Images(original = OriginalImage("url")))} }
+        val mockData = List(10) {
+            GifItem(images = Images(original = OriginalImage("url")))
+        }
         ResultScreen(stringResource(R.string.placeholder_success))
     }
-
+}

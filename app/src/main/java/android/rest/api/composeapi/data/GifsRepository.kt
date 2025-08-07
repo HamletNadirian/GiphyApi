@@ -11,5 +11,5 @@ class NetworkGifsRepository(
     private val gifApiService: GifApiService
 ) : GifsRepository {
     override suspend fun getGifs(): GifResponse
-    = gifApiService.getTrendingGifs("sUQqe1ehBvfCmayEnDx7llCXBIhPnI7i",15)
+    = gifApiService.getTrendingGifs("KEY",15)
 }
