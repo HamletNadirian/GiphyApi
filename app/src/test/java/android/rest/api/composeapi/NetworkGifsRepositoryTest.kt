@@ -16,6 +16,7 @@ class NetworkGifsRepositoryTest {
                 gifApiService = FakeGifsApiService()
             )
             assertEquals(FakeDataSource.fakeGifResponse.gifs, repository.getGifs().gifs)
+            assertEquals(FakeDataSource.fakeGifResponse.gifs, repository.getStickers().gifs)
 
         }
 }

@@ -1,27 +1,24 @@
 package android.rest.api.composeapi.ui.theme.screens
 
 import android.rest.api.composeapi.R
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import android.widget.ImageView
 import androidx.compose.ui.tooling.preview.Preview
 import com.bumptech.glide.Glide
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+
 
 @Composable
 fun DetailsScreen(
@@ -30,42 +27,38 @@ fun DetailsScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black)
-            .clickable { onBackClick() },
-        contentAlignment = Alignment.Center
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-
-        AndroidView(
-            factory = {
-                ImageView(it).apply {
-                    scaleType = ImageView.ScaleType.FIT_CENTER
-                    Glide.with(context)
-                        .asGif()
-                        .load(gifUrl)
-                        .placeholder(R.drawable.loading_img)
-                        .error(R.drawable.ic_broken_image)
-                        .into(this)
-                }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
-
-        IconButton(
-            onClick = onBackClick,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.White,
-                modifier = Modifier.size(32.dp)
+        if (gifUrl.isEmpty()) {
+            Text("Ошибка: URL изображения пустой")
+        } else {
+            AndroidView(
+                factory = {
+                    ImageView(it).apply {
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                        Glide.with(context)
+                            .asGif()
+                            .load(gifUrl)
+                            .placeholder(R.drawable.loading_img)
+                            .error(R.drawable.ic_broken_image)
+                            .into(this)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             )
+        }
+        Button(
+            onClick = onBackClick,
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Назад")
         }
     }
 }

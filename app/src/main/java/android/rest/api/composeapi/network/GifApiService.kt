@@ -14,5 +14,9 @@ interface GifApiService {
         @Query("limit") limit: Int
     ): GifResponse
 
-
+    @GET("v1/stickers/trending")
+    suspend fun getTrendingStickers(
+        @Query("api_key") apiKey: String,
+        @Query("limit") limit: Int
+    ): GifResponse
 }

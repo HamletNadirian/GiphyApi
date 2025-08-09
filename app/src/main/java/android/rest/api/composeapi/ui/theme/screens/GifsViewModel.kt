@@ -27,8 +27,13 @@ class GifsViewModel(private val imagesGifsRepository: GifsRepository) : ViewMode
     var gifsUiState: GifsUiState by mutableStateOf(GifsUiState.Loading)
         private set
 
+    var stickerUiState: GifsUiState by mutableStateOf(GifsUiState.Loading)
+        private set
+
+
     init {
         getGifs()
+        getStickers()
     }
 
     fun getGifs() {
@@ -36,6 +41,18 @@ class GifsViewModel(private val imagesGifsRepository: GifsRepository) : ViewMode
             gifsUiState = GifsUiState.Loading
             gifsUiState = try {
                 GifsUiState.Success(imagesGifsRepository.getGifs().gifs)
+            } catch (e: IOException) {
+                GifsUiState.Error
+            } catch (e: HttpException) {
+                GifsUiState.Error
+            }
+        }
+    }
+    fun getStickers() {
+        viewModelScope.launch {
+            stickerUiState = GifsUiState.Loading
+            stickerUiState = try {
+                GifsUiState.Success(imagesGifsRepository.getStickers().gifs)
             } catch (e: IOException) {
                 GifsUiState.Error
             } catch (e: HttpException) {

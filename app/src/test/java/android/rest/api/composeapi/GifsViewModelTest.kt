@@ -25,5 +25,9 @@ class GifsViewModelTest {
                 GifsUiState.Success(FakeDataSource.gifsList),
                 gifsViewModel.gifsUiState
             )
+            assertEquals(
+                GifsUiState.Success(FakeDataSource.gifsList),
+                gifsViewModel.getStickers()
+            )
         }
 }
