@@ -8,6 +8,7 @@ import android.rest.api.composeapi.model.OriginalImage
 import android.rest.api.composeapi.ui.theme.ComposeApiTheme
 import android.util.Log
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,12 +31,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 
 import com.bumptech.glide.Glide
 
@@ -81,7 +86,19 @@ fun GifsCard(
                     onGifClick(url)
                 }
         ) {
-            AndroidView(
+          AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(url)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.loading_img),
+                error = painterResource(R.drawable.ic_broken_image)
+            )
+        }
+      /*      AndroidView(
                 factory = {
                     ImageView(it).apply {
                         scaleType = ImageView.ScaleType.CENTER_CROP
@@ -96,10 +113,10 @@ fun GifsCard(
                     }
                 },
                 modifier = Modifier.fillMaxSize()
-            )
+            )*/
         }
     }
-}
+
 
 @Composable
 fun GifsGridScreen(
@@ -170,14 +187,47 @@ fun LoadingScreenPreview() {
         LoadingScreen()
     }
 }
-
+@Composable
+fun PreviewGifsCard(
+    @DrawableRes drawableRes: Int,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = androidx.compose.ui.graphics.Color.Black
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        Image(
+            painter = painterResource(drawableRes),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
 @Preview
 @Composable
 fun GifsGridScreenPreview() {
     ComposeApiTheme {
-        val mockData = List(10) {
-            GifItem(images = Images(original = OriginalImage("url")))
+        // Для превью используем фиктивные URL, которые покажут placeholder
+        val mockData = List(10) { index ->
+            GifItem(
+                images = Images(
+                    original = OriginalImage(
+                        // Можете попробовать и этот вариант для drawable:
+                        // url = "android.resource://${BuildConfig.APPLICATION_ID}/${R.drawable.your_gif}"
+                        url = "https://example.com/gif$index.gif"
+                    )
+                )
+            )
         }
-        ResultScreen(stringResource(R.string.placeholder_success))
+
+        GifsGridScreen(
+            gifs = mockData,
+            onGifClick = {}
+        )
     }
 }
+

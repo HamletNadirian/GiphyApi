@@ -57,14 +57,13 @@ android {
 
 dependencies {
     implementation(libs.androidx.navigation.compose)
-
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.retrofit)
-/*    implementation(libs.retrofit.gson)
-    implementation(libs.gson)*/
+   implementation(libs.retrofit.gson)
+    implementation(libs.gson)
     implementation(libs.retrofit.serialization)
-    implementation(libs.coil3)
-    implementation(libs.coil3.compose)
     implementation(libs.coil3.network.okhttp)
     implementation(libs.glide)
     kapt(libs.glide.compiler)
