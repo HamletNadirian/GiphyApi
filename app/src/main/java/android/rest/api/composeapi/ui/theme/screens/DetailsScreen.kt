@@ -18,6 +18,11 @@ import com.bumptech.glide.Glide
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 
 
 @Composable
@@ -37,7 +42,20 @@ fun DetailsScreen(
         if (gifUrl.isEmpty()) {
             Text("Ошибка: URL изображения пустой")
         } else {
-            AndroidView(
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(gifUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "GIF изображение",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentScale = ContentScale.Fit,
+                placeholder = painterResource(R.drawable.loading_img),
+                error = painterResource(R.drawable.ic_broken_image)
+            )
+            /*           AndroidView(
                 factory = {
                     ImageView(it).apply {
                         scaleType = ImageView.ScaleType.FIT_CENTER
@@ -52,7 +70,7 @@ fun DetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-            )
+            )*/
         }
         Button(
             onClick = onBackClick,

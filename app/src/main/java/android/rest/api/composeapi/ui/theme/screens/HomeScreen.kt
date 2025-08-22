@@ -1,4 +1,5 @@
 package android.rest.api.composeapi.ui.theme.screens
+
 import android.graphics.Color
 import android.rest.api.composeapi.R
 import android.rest.api.composeapi.model.GifItem
@@ -23,18 +24,32 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -52,6 +67,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
+
     when (gifsUiState) {
         is GifsUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
         is GifsUiState.Success -> GifsGridScreen(
@@ -60,6 +76,7 @@ fun HomeScreen(
             modifier = modifier,
             contentPadding = contentPadding
         )
+
         is GifsUiState.Error -> ErrorScreen(retryAction, modifier = modifier.fillMaxSize())
     }
 }
@@ -70,7 +87,9 @@ fun GifsCard(
     onGifClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     val context = LocalContext.current
+
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -78,6 +97,7 @@ fun GifsCard(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -86,7 +106,7 @@ fun GifsCard(
                     onGifClick(url)
                 }
         ) {
-          AsyncImage(
+            AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(url)
                     .crossfade(true)
@@ -98,25 +118,24 @@ fun GifsCard(
                 error = painterResource(R.drawable.ic_broken_image)
             )
         }
-      /*      AndroidView(
-                factory = {
-                    ImageView(it).apply {
-                        scaleType = ImageView.ScaleType.CENTER_CROP
-                        isClickable = false
-                        isFocusable = false
-                        Glide.with(context)
-                            .asGif()
-                            .load(url)
-                            .placeholder(R.drawable.loading_img)
-                            .error(R.drawable.ic_broken_image)
-                            .into(this)
-                    }
-                },
-                modifier = Modifier.fillMaxSize()
-            )*/
-        }
+        /*      AndroidView(
+                  factory = {
+                      ImageView(it).apply {
+                          scaleType = ImageView.ScaleType.CENTER_CROP
+                          isClickable = false
+                          isFocusable = false
+                          Glide.with(context)
+                              .asGif()
+                              .load(url)
+                              .placeholder(R.drawable.loading_img)
+                              .error(R.drawable.ic_broken_image)
+                              .into(this)
+                      }
+                  },
+                  modifier = Modifier.fillMaxSize()
+              )*/
     }
-
+}
 
 @Composable
 fun GifsGridScreen(
@@ -125,11 +144,13 @@ fun GifsGridScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         modifier = modifier.padding(horizontal = 4.dp),
         contentPadding = contentPadding,
     ) {
+
         items(items = gifs, key = { gif -> gif.images.original.url }) { gif ->
             GifsCard(
                 url = gif.images.original.url,
@@ -169,17 +190,6 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
         }
     }
 }
-
-@Composable
-fun ResultScreen(photos: String, modifier: Modifier = Modifier) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-    ) {
-        Text(text = photos)
-    }
-}
-
 @Preview
 @Composable
 fun LoadingScreenPreview() {
@@ -187,26 +197,7 @@ fun LoadingScreenPreview() {
         LoadingScreen()
     }
 }
-@Composable
-fun PreviewGifsCard(
-    @DrawableRes drawableRes: Int,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(
-            containerColor = androidx.compose.ui.graphics.Color.Black
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ) {
-        Image(
-            painter = painterResource(drawableRes),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-    }
-}
+
 @Preview
 @Composable
 fun GifsGridScreenPreview() {

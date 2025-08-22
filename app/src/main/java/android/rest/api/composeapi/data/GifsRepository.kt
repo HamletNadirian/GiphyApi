@@ -28,7 +28,4 @@ class NetworkGifsRepository(
     override suspend fun searchStickers(query: String): GifResponse =
         gifApiService.searchTrendingStickers(apiKey = BuildConfig.GIPHY_API_KEY, query = query, 15)
 
-//https://api.giphy.com/v1/gifs/trending?api_key=sUQqe1ehBvfCmayEnDx7llCXBIhPnI7i&limit=5
-//https://api.giphy.com/v1/gifs/trending?api_key=sUQqe1ehBvfCmayEnDx7llCXBIhPnI7i
-//https://api.giphy.com/v1/gifs/search?api_key=sUQqe1ehBvfCmayEnDx7llCXBIhPnI7i&q=cat&limit=5
 }

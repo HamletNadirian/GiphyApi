@@ -26,12 +26,10 @@ interface GifApiService {
         @Query("q") query: String,
         @Query("limit") limit: Int
     ): GifResponse
-    //https://api.giphy.com/v1/gifs/search?api_key=sUQqe1ehBvfCmayEnDx7llCXBIhPnI7i&q=cat&limit=5
     @GET("v1/stickers/search")
     suspend fun searchTrendingStickers(
         @Query("api_key") apiKey: String,
         @Query("q") query: String,
         @Query("limit") limit: Int
     ): GifResponse
-    //https://api.giphy.com/v1/gifs/search?api_key=sUQqe1ehBvfCmayEnDx7llCXBIhPnI7i&q=cat&limit=5
 }

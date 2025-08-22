@@ -30,13 +30,28 @@ class GifsViewModel(private val imagesGifsRepository: GifsRepository) : ViewMode
     var stickerUiState: GifsUiState by mutableStateOf(GifsUiState.Loading)
         private set
 
+    var searchGifsUiState: GifsUiState by mutableStateOf(GifsUiState.Loading)
+        private set
+
+    var searchStickersUiState: GifsUiState by mutableStateOf(GifsUiState.Loading)
+        private set
+
+    var currentSearchQuery: String by mutableStateOf("")
+        private set
+
+    var isSearchMode: Boolean by mutableStateOf(false)
+        private set
 
     init {
         getGifs()
         getStickers()
+        searchGifs("cats")
+        searchStickers("cats")
     }
 
     fun getGifs() {
+        isSearchMode = false
+
         viewModelScope.launch {
             gifsUiState = GifsUiState.Loading
             gifsUiState = try {
@@ -48,7 +63,10 @@ class GifsViewModel(private val imagesGifsRepository: GifsRepository) : ViewMode
             }
         }
     }
+
     fun getStickers() {
+        isSearchMode = false
+
         viewModelScope.launch {
             stickerUiState = GifsUiState.Loading
             stickerUiState = try {
@@ -59,6 +77,67 @@ class GifsViewModel(private val imagesGifsRepository: GifsRepository) : ViewMode
                 GifsUiState.Error
             }
         }
+    }
+
+    fun searchGifs(query: String) {
+        isSearchMode = true
+
+        if (query.isBlank()) {
+            clearSearch()
+            return
+        }
+
+        currentSearchQuery = query
+        isSearchMode = true
+
+        viewModelScope.launch {
+            searchGifsUiState = GifsUiState.Loading
+            searchGifsUiState = try {
+                GifsUiState.Success(imagesGifsRepository.searchGifs(query).gifs)
+            } catch (e: IOException) {
+                GifsUiState.Error
+            } catch (e: HttpException) {
+                GifsUiState.Error
+            }
+        }
+    }
+
+    fun searchStickers(query: String) {
+        isSearchMode = true
+
+        if (query.isBlank()) {
+            clearSearch()
+            return
+        }
+
+        currentSearchQuery = query
+        isSearchMode = true
+
+        viewModelScope.launch {
+            searchStickersUiState = GifsUiState.Loading
+            searchStickersUiState = try {
+                GifsUiState.Success(imagesGifsRepository.searchStickers(query).gifs)
+            } catch (e: IOException) {
+                GifsUiState.Error
+            } catch (e: HttpException) {
+                GifsUiState.Error
+            }
+        }
+    }
+
+    fun clearSearch() {
+        currentSearchQuery = ""
+        isSearchMode = false
+        searchGifsUiState = GifsUiState.Success(emptyList())
+        searchStickersUiState = GifsUiState.Success(emptyList())
+    }
+
+    fun getCurrentGifsState(): GifsUiState {
+        return if (isSearchMode) searchGifsUiState else gifsUiState
+    }
+
+    fun getCurrentStickersState(): GifsUiState {
+        return if (isSearchMode) searchStickersUiState else stickerUiState
     }
 
     companion object {
