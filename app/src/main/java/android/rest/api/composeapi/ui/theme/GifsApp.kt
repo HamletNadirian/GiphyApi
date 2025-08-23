@@ -102,7 +102,7 @@ fun GifsApp() {
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .padding(horizontal = 8.dp, vertical = 8.dp)
                         ) {
                             // Здесь можно добавить историю поиска или предложения
                             // Пока оставим пустым

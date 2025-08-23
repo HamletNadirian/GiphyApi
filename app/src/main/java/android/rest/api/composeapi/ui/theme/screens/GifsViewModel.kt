@@ -45,8 +45,8 @@ class GifsViewModel(private val imagesGifsRepository: GifsRepository) : ViewMode
     init {
         getGifs()
         getStickers()
-        searchGifs("cats")
-        searchStickers("cats")
+       /* searchGifs("cats")
+        searchStickers("cats")*/
     }
 
     fun getGifs() {
